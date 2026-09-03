@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - RAZORPAY_KEY_ID=${RAZORPAY_KEY_ID:-rzp_test_TVQr6C3It4AWiR}
+      - RAZORPAY_KEY_SECRET=${RAZORPAY_KEY_SECRET:-}
+      - RAZORPAY_MOCK_MODE=${RAZORPAY_MOCK_MODE:-true}
+      - AP2_MANDATE_SECRET=${AP2_MANDATE_SECRET:-dev_mandate_secret_change_in_production}
+      - ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000,*
+    volumes:
+      - ./backend/app:/app/app
+      - backend_data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  backend_data:
