@@ -43,6 +43,16 @@ async def startup_event():
     print(f"[AgentCart] Razorpay mode: {'MOCK' if razorpay_service.mock_mode else 'LIVE TEST'}")
     print(f"[AgentCart] Catalog: {len(catalog_service.list_all())} products loaded.")
 
+@app.get("/", tags=["Root"])
+def root():
+    return {
+        "status": "online",
+        "message": "AgentCart API is running",
+        "version": settings.VERSION,
+        "docs": "/docs",
+        "health": "/health"
+    }
+
 @app.get("/health", tags=["System Health"])
 def health_check():
     mandate = mandate_service.get_active()
